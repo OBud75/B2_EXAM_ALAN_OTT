@@ -251,3 +251,113 @@ echo 'echo "Welcome Ramkumar"' >> bash.rc
 
 ## 4. Permissions - /home/04Permissions/
 
+### Créer un dossier "shared" à la racine du dossier de l'examen.
+``` bash
+mkdir shared
+```
+
+### Mettez "Toto" en tant que propriétaire du dossier "shared".
+``` bash
+sudo chown -R Toto:Toto shared
+```
+
+### Dans ce dossier, créer un fichier "owned_by_toto" contenant "echo toto".
+``` bash
+echo "echo toto" > owned_by_toto
+```
+
+### "Toto" doit être également propriétaire du fichier.
+``` bash
+sudo chown Toto owned_by_toto
+sudo chgrp Toto owned_by_toto
+ls -l
+```
+
+### Rendez ce fichier executable avec bash (#!/usr/bin/bash).
+``` bash
+vi owned_by_toto
+```
+``` bash
+#!/usr/bin/bash
+echo toto
+```
+
+### Donnez à "Toto" le droit d'executer ce script.
+``` bash
+sudo chmod g+x owned_by_toto
+```
+
+### Que fait le commande "sudo chmod g+x owned_by_toto" ?
+``` 
+Elle donne le droit a l'utilisateur Toto dexecuter ce ficher
+```
+
+### Que fait la commande "sudo chown root:root owned_by_toto" ?
+``` 
+Rend l'utilisateur Toto et le group Toto proprietaire du fichier owned_by_toto
+```
+
+## 5. Environnement - /home/05Environnement/
+
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+###
+``` bash
+```
+
+
