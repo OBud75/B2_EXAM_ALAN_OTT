@@ -300,47 +300,112 @@ Rend l'utilisateur Toto et le group Toto proprietaire du fichier owned_by_toto
 ## 5. Environnement - /home/05Environnement/
 
 
-###
+### Créer un dossier "environ"
 ``` bash
+mkdir environ
 ```
 
-###
+### Créer un script qui permette à l'utilisateur de choisir la valeur d'une variable d'environnement "ENVIRON" : les choix sont "dev", "prod", et "test".
 ``` bash
+nano environ.sh
+```
+``` bash                                                                    
+#!/usr/bin/bash
+read -p "choose env :" temp
+
+case $temp in
+        dev)
+                ENVIRON='dev'
+                ;;
+        prod)
+                ENVIRON='prod'
+                ;;
+        test)
+                ENVIRON='test'
+                ;;
+        *)
+                echo "error try again"
+                ;;
+esac
+
+echo $ENVIRON
+```
+``` bash
+bash environ.sh
+>choose env :
 ```
 
-###
+### Lorsque l'utilisateur change la variable "ENVIRON", affichez un message de confirmation.
 ``` bash
+...
+echo $ENVIRON
 ```
 
-###
+### Dans ce dossiez, créer un environnement virtuel python "pythonvenv". Activez le, installez la librairie flask et mettez le résultat de la commande "pip freeze" dans un fichier "requirements.txt".
 ``` bash
+python -m venv pythonvenv
+. pythonvenv/bin/activate
+pip install flask
+pip freeze >> requirements.txt
 ```
 
-###
-``` bash
+### A quoi sert cette dernière opération ?
+``` 
+cest commande permet de verifier que les packet requise sont bien installés et accessible en case échéant
 ```
 
-###
+### Ajouter un fichier .gitignore, ajoutez y "pythonvenv/".
 ``` bash
+echo "pythonvenv/" > .gitignore
 ```
 
-###
-``` bash
+### A quoi sert cette dernère opération ?
+```
+Pour que les fichier d'environement virtuel python ne soit pas ajouter a notre git 
 ```
 
-###
+### Quels autres fichiers ou dossiers serait il approprié d'ajouter dans le .gitignore ? Pourquoi ?
 ``` bash
+# fichier ide
+.idea
+.vscode
+# logs
+*.log
+# temporary files
+temp/
+# binaries
 ```
 
-###
-``` bash
+### A quoi servent les commandes "apt update", "apt upgrade" ?
+``` 
+apt update
+permet de mettre à jour la liste des paquets disponibles
+
+apt upgrade
+permet de mettre à jour les paquets déjà installés
 ```
 
-###
-``` bash
+### Quelles différence entre les commandes "apt autoclean", "apt clean", "apt autoremove" et "apt purge"?
+``` 
+apt autoclean
+- effacer le cache
+
+apt clean
+- effacer les packet non disponible
+
+apt autoremove
+- effacer paquets orphelins
+
+apt purge
+- effacer par force tout les packet et fichier
 ```
 
-###
+
+
+## 6. Systemctl - /home/06Systemctl/
+
+
+### 
 ``` bash
 ```
 
