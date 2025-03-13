@@ -405,24 +405,142 @@ apt purge
 ## 6. Systemctl - /home/06Systemctl/
 
 
-### 
+### Quelle est la commande pour prendre en compte les changements dans la configuration des services ?
 ``` bash
+systemctl daemon-reload
 ```
 
-###
+### Comment démarrer et stopper un service ?
 ``` bash
+systemctl start service  
+systemctl stop service
 ```
 
-###
-``` bash
+### A quoi sert l'option "restart" ? Quelles différences avec "start" ?
+``` 
+redemarre le servie a zero 
 ```
 
-###
+
+## 6. Cron - /home/07Cron/
+
+### Quelle est la commande pour lister les taches cron ?
 ``` bash
+crontab -l
 ```
 
-###
+### Comment créer une tache cron qui lance le script "owned_by_toto" avec l'utilisateur Toto à 1h30 du matin, tous les mercredis du mois.
 ``` bash
+crontab -e
+30 1 * * 3, /path/owned_by_toto
 ```
 
+### Expliquez brièvement à quoi servent les dossiers cron.weekly, cron.hourly et cron.monthly
+``` 
+A executer un script chaque semaine, heur, mois
+```
+
+
+
+## 6. Logs - /home/08Logs/
+
+
+### Quels sont les différents niveaux de logs ?
+``` 
+DEBUG 
+INFO 
+WARN 
+ERROR 
+FATAL
+```
+
+### Créer un script qui, quand il est lancé, ajoute dans un fichier "logs" une ligne avec l'utilisateur actuel ainsi que l'heure à laquelle le programme est lancé.
+``` bash
+vi logs.sh
+```
+``` bash
+#!/bin/bash
+Time=$(date)
+log="$USER, $Time"
+echo $log >> logs
+```
+
+###  Comment limiter la taille des fichiers de log du journal (journalctl) à 200Mo ?
+``` bash
+sudo vi /etc/systemd/journald.conf
+
+[Journal]
+SystemMaxUse=200M
+```
+
+### Comment configurer les logs de l'application "nginx" (situés dans /var/log/nginx.log) pour que des rotations soient effectuées tous les mois en conservant les 12 derniers mois de logs, compressant les plus ancients, et en créant un nouveau fichier avec un mod "644 root root"
+``` bash
+/var/log/nginx/*.log {
+    monthly
+    rotate 12
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 644 root root
+    sharedscripts
+    postrotate
+        if [ -f /var/run/nginx.pid ]; then
+            kill -USR1 `cat /var/run/nginx.pid`
+        fi
+    endscript
+}
+```
+
+### Dans la pratique, pourquoi créer des règles de rotation de log ?
+``` 
+pour limiter lespace disk utiliser  
+```
+
+
+## 9. FileSystem - /home/09Web/
+
+### Quelle est la différence entre http et https ?
+```
+https est chiffre et dont securiser
+```
+
+### Donnez le nom de 2 programmes qui permettent de faire des requetes http.
+``` 
+Postman
+Nettool
+```
+
+### Par convention, à quoi sont reservés les ports 80, 22 et 443 ?
+``` 
+22 ssh 
+80 http 
+443 https
+```
+
+### Comment activer et désactiver le pare feu par défaut ? Comment lister les règles entrantes et sortantes ?
+``` bash
+sudo systemctl stop ufw
+sudo systemctl start ufw
+sudo ufw status
+```
+
+### A quoi sert le programme Nginx ?
+``` 
+Nginx est un serveur web qui permet de recevoir des requêtes http(s)
+```
+
+### A quoi correspondent les initiales MVC ? Quel avantage offre cette architecture d'application ?
+``` 
+Modèle-vue-contrôleur ou MVC est un motif d'architecture logicielle destiné aux interfaces graphiques.
+```
+
+### A quoi correspondent les initiales CRUD ?
+
+``` 
+Create
+Read
+Update
+Delete
+```
 
