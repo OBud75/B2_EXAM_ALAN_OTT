@@ -25,6 +25,8 @@ cd assets
 touch img_1.png img_2.png img_3.png img_4.png img_5.png img_6.png img_7.png img_8.png img_9.png img_10.png
 ```
 
+-> touch img_{1..10}.png
+
 ### 3. Dans ce même dossier, créer un fichier "du_texte.txt" contenant "Hello, world".
 ``` bash
 echo "Hello, world" > du_texte.txt
@@ -34,6 +36,9 @@ echo "Hello, world" > du_texte.txt
 ``` bash
 for i in $(seq 1 10); do mv img_$i.png img_$i.jpeg; done
 ```
+
+-> La lisibilité prime sur la concision, faire tenir le code sur 1 ligne n'est pas forcément une bonne idée si cela rend moins clair le fait qu'on est en train de boucler.
+
 
 ### 5. Créer un dossier "medias" dans le dossier "assets", déplacez y tous les fichiez .jpeg du dossier "assets".
 ``` bash
@@ -56,6 +61,14 @@ mv -- *.jpeg medias
  - IMAGES
 ```
 
+-> Oui. Sur windows cela permet à l'ordinateur de savoir avec quel programme il peut ouvrir le fichier, mais sur Linux c'est surtout l'en tête du fichier qui sert à cela.
+Par contre dans certains cas cela aide le programme lancé pour lire le fichier
+Un bon exemple est la manière dont certaines applications graphiques ou multimédias sous Linux se comportent :
+Si on essaiee d’ouvrir un fichier .jpg avec un éditeur de texte comme nano, il ne prendra pas en compte l’extension et affichera du texte illisible.
+Par contre, si on le renomme en .txt et qu'on tente de l’ouvrir avec "Eye of GNOME" (visionneuse d'images), il refusera de le charger.
+
+
+
 ### 7. Créer un fichier "script" (toujours dans le dossier) qui affiche "Hello world", ajoutez #!/usr/bin/bash
 ```
 /home/01FileSystem/script01.sh
@@ -73,6 +86,12 @@ echo "Hello, World"
 ca dit a la console quelle compilateur "bash - trouver dans /usr/bin/" utiliser pour executer le script
 ils y a pas de difference, en utilisant la comand bash _ on utilise le compilateur a base de notre variable denvironement
 ```
+
+-> Avec ./script, le noyau lit la première ligne pour déterminer quel interpréteur lancer et transmet le script en argument.
+La présence des permissions d'exécution est indispensable car le système vérifie que le fichier est exécutable.
+En lançant le script avec la commande bash script, vous invoquez directement Bash pour qu’il interprète le contenu du fichier.
+Dans ce cas, la ligne shebang est ignorée et il n’est pas nécessaire que le fichier possède les droits d’exécution.
+Bash lit simplement le contenu du fichier grâce aux permissions de lecture.
 
 ## 2. Commandes - /home/02Commandes/
 
@@ -161,6 +180,13 @@ un if/ else verifie une condition et passe a la prochaine condition un par un (g
 un switch case fait un GOTO vers une address donc est becoup plus rapide (grandO -O 1)
 ```
 
+-> Bien.
+A noter qu'un switch coute plus cher en mémoire (vu qu'on doit charger toutes les adresses à l'avance)
+Cela ne "vaut le coup" uniquement si les différentes possibilités ont +/- autant de chance d'arriver
+Si l'utilisateur à plus de chances de choisir A, puis de choisir B, puis de choisir C, autant faire
+if A; else if B; else if C;
+
+
 ### Dans le fichier "script", ajouter un switch qui check si le 2ieme argument passé au programme est "hello", "toto" ou autre chose.
 ``` bash
 #!/bin/bash
@@ -191,6 +217,11 @@ bash script.sh test "toto"
 ``` bash
 awk -F':' '{ print $1}' /etc/passwd
 ```
+
+-> Au lieu d'afficher le contenu du fichier brut, on préferera souvent utiliser getent passwd (qui utilise la base de données systeme).
+On abstrait le fait que les utilisateus sont stockés dans un fichier pour ne pas être tenté de modifier le fichier directement au lieu des programmes comme useradd etc (et donc de faire des erreurs potentielles).
+A noter que cela dépendra toujours du contexte et de ce que vous êtes en train de faire.
+
 
 ### Créer un nouvel utilisateur "Toto" avec un groupe du même nom.
 ``` bash
@@ -242,6 +273,9 @@ sudo adduser Toto sudo
 ``` 
 Les permission de root l'ui authorise des commandes qui peuve etre destructive aux system qui sont irreversible 
 ```
+
+-> Le point important à noter est qu'utiliser sudo élève les droits mais uniquement pour la commande qui suit
+et surtout cela demandera le mot de passe contrairement à root qui peut tout supprimer sans qu'on ne lui demande aucune vérification
 
 ### Comment faire pour qu'à chaque fois que toto démarre un shell, un message "bienvenue toto" s'affiche ?
 ``` bash
@@ -354,6 +388,8 @@ pip freeze >> requirements.txt
 cest commande permet de verifier que les packet requise sont bien installés et accessible en case échéant
 ```
 
+-> Cela permet de mettre toutes les dépendances dans un fichier, et ainsi de pouvoir les reconstituer dans un autre environnement. 
+
 ### Ajouter un fichier .gitignore, ajoutez y "pythonvenv/".
 ``` bash
 echo "pythonvenv/" > .gitignore
@@ -375,6 +411,9 @@ Pour que les fichier d'environement virtuel python ne soit pas ajouter a notre g
 temp/
 # binaries
 ```
+
+-> Pensez en priorité aux données sensibles, typiquement les fichiers contenant les variables d'environnement avec potentiellement des clés d'authentification, codes d'accès à la base de donnée etc.
+Puis effectivement ce que vous avez listé dans une optique de place (cela pourrait être embettant mais pas forcément critique)
 
 ### A quoi servent les commandes "apt update", "apt upgrade" ?
 ``` 
@@ -420,6 +459,9 @@ systemctl stop service
 ``` 
 redemarre le servie a zero 
 ```
+-> On utilisera restart surtout dans les cas où on veut simplement prendre en compte des modifications de configuration.
+A noter que restart de stop pas complètement le process, cela peut avoir une grosse importance, par exemple pour un service
+de gestion de base de données tel que Postgres, stop + start créera une nouvelle connection à la base et pas restart. 
 
 
 ## 6. Cron - /home/07Cron/
@@ -439,7 +481,9 @@ crontab -e
 ``` 
 A executer un script chaque semaine, heur, mois
 ```
-
+-> Dans la logique, les taches .weekly, hourly, monthly sont le plus souvent effectuées par le système (souvent par root).
+Alors que les autres sont souvent executées par un utilisateur (postgres, nginx, un humain etc).
+Dernier détail : sur certaines distributions, les taches liées à un utilisateur sont dans /var
 
 
 ## 6. Logs - /home/08Logs/
@@ -473,6 +517,8 @@ sudo vi /etc/systemd/journald.conf
 SystemMaxUse=200M
 ```
 
+-> Il est possible de simplifier la manipulation du fichier avec sudo systemctl edit systemd-journald
+
 ### Comment configurer les logs de l'application "nginx" (situés dans /var/log/nginx.log) pour que des rotations soient effectuées tous les mois en conservant les 12 derniers mois de logs, compressant les plus ancients, et en créant un nouveau fichier avec un mod "644 root root"
 ``` bash
 /var/log/nginx/*.log {
@@ -496,7 +542,6 @@ SystemMaxUse=200M
 ``` 
 pour limiter lespace disk utiliser  
 ```
-
 
 ## 9. FileSystem - /home/09Web/
 
@@ -534,6 +579,12 @@ Nginx est un serveur web qui permet de recevoir des requêtes http(s)
 ``` 
 Modèle-vue-contrôleur ou MVC est un motif d'architecture logicielle destiné aux interfaces graphiques.
 ```
+
+-> Cela permet de séparer les responsabilités mais pas forcément dans un logiciel destiné uniquement aux interfaces graphiques.
+Le modèle correspond à la couche de données
+La vue correspond à la couche interface client (graphique ou pas)
+Le controleur est une sorte de lien entre les 2
+(Cela dépasse un peu le contexte du cours)
 
 ### A quoi correspondent les initiales CRUD ?
 
